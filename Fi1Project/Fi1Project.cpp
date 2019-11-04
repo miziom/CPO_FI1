@@ -27,7 +27,7 @@ double countKernelCell(double sigma, int row, int col) {
 	double squereBracket = 1 + index;
 	double denominator = M_PI * pow(sigma, 4);
 	double result = -(1 / denominator) * squereBracket * power;
-	return result;
+	return 480 * result;
 }
 
 double **createKernel(int size, double sigma) {
@@ -63,32 +63,107 @@ cv::Vec3b** returnRegionOfPixel(cv::Mat img, int kernelSize, int pixelRow, int p
 	for (int row = minPicselRow; row <= maxPicselRow; row++) {
 		for (int col = minPicselCol; col <= maxPicselCol; col++) {
 			partOfImage[guardRow][guardCol] = img.at<cv::Vec3b>(row, col);
+			guardCol++;
 		}
+		guardCol = 0;
+		guardRow++;
 	}
 	return partOfImage;
+}
+
+double sumOfKernel(double** kernel, int kernelSize) {
+	double sum = 0;
+	for (int row = 0; row < kernelSize; row++) {
+		for (int col = 0; col < kernelSize; col++) {
+			sum += kernel[row][col];
+		}
+	}
+	return sum;
+}
+
+double sumOfProducts(cv::Vec3b** regionOfPixel, double** kernel, int kernelSize, int pixelComponent) {
+	double sumOfProd = 0;
+	for (int row = 0; row < kernelSize; row++) {
+		for (int col = 0; col < kernelSize; col++) {
+			sumOfProd = sumOfProd + (regionOfPixel[row][col].val[pixelComponent] * kernel[row][col]);
+		}
+	}
+	return sumOfProd;
+}
+
+int pixelComponentValue(double pixelComponent) {
+	int pixelComponentValue;
+	if (pixelComponent > 255) {
+		return 255;
+	}
+	else if (pixelComponent < 0) {
+		return 0;
+	}
+	else {
+		pixelComponentValue = (int)round(pixelComponent);
+	}
+}
+
+void LaplacianOfGaussian(cv::Mat &img, cv::Mat imgCopy, double sigma, int kernelSize) {
+
+	int cols = imgCopy.size().width;
+	int rows = imgCopy.size().height;
+	cv::Vec3b** partOfImage;
+	double** kernel;
+	double kernelSum = 0;
+	double sumOfProd = 0;
+	int pixComponentValue = 0;
+	//creating Kernel
+	kernel = createKernel(kernelSize, sigma);
+	kernelSum = sumOfKernel(kernel, kernelSize);
+
+	for (int row = (kernelSize - 1) / 2; row < (rows - 1 - ((kernelSize - 1) / 2)); row++) {
+		for (int col = (kernelSize - 1) / 2; col < (cols - 1 - ((kernelSize - 1) / 2)); col++) {
+			partOfImage = returnRegionOfPixel(imgCopy, kernelSize, row, col);
+			cv::Vec3b pixel;
+			for (int i = 0; i < 3; i++) {
+				double sum = sumOfProducts(partOfImage, kernel, kernelSize, i);
+				double pixelComponentFirstValue = sum / kernelSum;
+				int pixelComValue = pixelComponentValue(pixelComponentFirstValue);
+				pixel.val[i] = pixelComValue;
+			}
+			img.at<cv::Vec3b>(row, col) = pixel;
+		}
+	}
+
 }
 
 
 int main()
 {
-	cv::Mat img = imread("image.jpg");
+	std::string imageName = "image.jpg";
+	cv::Mat img = imread(imageName);
+	cv::Mat imgCopy = imread(imageName);
 	cv::Mat imgGray;
+	cv::Mat imgGrayCopy;
+
+	cv::Mat img3 = imread(imageName);
+
 	cv::cvtColor(img, imgGray, cv::COLOR_BGR2GRAY);
-	int cols = imgGray.size().width;
-	int rows = imgGray.size().height;
+	cv::cvtColor(imgGray, imgGray, cv::COLOR_GRAY2BGR);
+
+	cv::cvtColor(imgCopy, imgGrayCopy, cv::COLOR_BGR2GRAY);
+	cv::cvtColor(imgGrayCopy, imgGrayCopy, cv::COLOR_GRAY2BGR);
+
+
 	double sigma = 1.4;
-	int kernelSize = 3;
-	cv::Vec3b** partOfImage;
+	int kernelSize = 5;
 
-	partOfImage = new cv::Vec3b*[kernelSize];
-	for (int row = (kernelSize - 1) / 2; row < (rows - 1 - ((kernelSize - 1) / 2)); row++) {
-		for (int col = (kernelSize - 1) / 2; col < (cols - 1 - ((kernelSize - 1) / 2)); col++) {
+	//LaplacianOfGaussian(img, imgCopy, sigma, kernelSize);
+	//LaplacianOfGaussian(imgGray, imgGrayCopy, sigma, kernelSize);
 
-		}
-	}
+
+	cv::GaussianBlur(img, img, Size(5, 5), 1.4, 0, BORDER_DEFAULT);
+	//cv::GaussianBlur(imgGray, imgGray, Size(5, 5), 1.4, 0, BORDER_DEFAULT);
 
 	cv::namedWindow("image", cv::WINDOW_NORMAL);
 	cv::imshow("image", img);
-	cv::waitKey(0);
+	cv::waitKey(0);	
+
 	return 0;
 }
