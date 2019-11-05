@@ -18,13 +18,13 @@
 //	return result;
 //}
 
-double countKernelCell(double sigma, int row, int col) {
-	double index = -((pow(col, 2) * pow(row, 2)) / (2 * pow(sigma, 2)));
+double countKernelCell(double sigma, int x, int y) {
+	double index = -((pow(x, 2) + pow(y, 2)) / (2 * pow(sigma, 2)));
 	double power = pow(M_E, index);
 	double squereBracket = 1 + index;
 	double denominator = M_PI * pow(sigma, 4);
 	double result = -(1 / denominator) * squereBracket * power;
-	return 480 * result;
+	return result;
 }
 
 double** createKernel(int size, double sigma) {
@@ -36,9 +36,19 @@ double** createKernel(int size, double sigma) {
 	}
 
 	for (int row = 0; row < size; row++) {
+		int y = row - ((size - 1) / 2);
 		for (int col = 0; col < size; col++) {
-			kernel[row][col] = countKernelCell(sigma, row, col);
+			int x = col - ((size - 1) / 2);
+			kernel[row][col] = countKernelCell(sigma, x, y);
 		}
+	}
+
+	//print kernel
+	for (int row = 0; row < size; row++) {
+		for (int col = 0; col < size; col++) {
+			std::cout << std::setw(15) << kernel[row][col];
+		}
+		std::cout << std::endl;
 	}
 	return kernel;
 }

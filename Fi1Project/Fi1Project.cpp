@@ -8,12 +8,8 @@
 #include <iostream>
 #include "log.h"
 
-
 using namespace std;
 using namespace cv;
-
-
-
 
 int main()
 {
@@ -23,8 +19,6 @@ int main()
 	cv::Mat imgGray;
 	cv::Mat imgGrayCopy;
 
-	cv::Mat img3 = imread(imageName);
-
 	cv::cvtColor(img, imgGray, cv::COLOR_BGR2GRAY);
 	cv::cvtColor(imgGray, imgGray, cv::COLOR_GRAY2BGR);
 
@@ -33,17 +27,14 @@ int main()
 
 
 	double sigma = 1.4;
-	int kernelSize = 5;
+	int kernelSize = 9;
 
-	LaplacianOfGaussian(img, imgCopy, sigma, kernelSize);
-	//LaplacianOfGaussian(imgGray, imgGrayCopy, sigma, kernelSize);
-
-
-	//cv::GaussianBlur(img, img, Size(5, 5), 1.4, 0, BORDER_DEFAULT);
-	//cv::GaussianBlur(imgGray, imgGray, Size(5, 5), 1.4, 0, BORDER_DEFAULT);
+	//LaplacianOfGaussian(img, imgCopy, sigma, kernelSize);
+	LaplacianOfGaussian(imgGray, imgGrayCopy, sigma, kernelSize);
 
 	cv::namedWindow("image", cv::WINDOW_NORMAL);
-	cv::imshow("image", img);
+	//cv::imshow("image", img);
+	cv::imshow("image", imgGray);
 	cv::waitKey(0);	
 
 	return 0;
