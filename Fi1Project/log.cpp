@@ -9,15 +9,6 @@
 #include <math.h>
 #include "log.h"
 
-//double countKernelCell(double sigma, int row, int col) {
-//
-//	double root = sqrt(2 * M_PI * pow(sigma, 2));
-//	double index = -( (pow(col, 2) * pow(row, 2)) / (2 * pow(sigma, 2)) );
-//	double power = pow(M_E, index);
-//	double result = power / root;
-//	return result;
-//}
-
 double countKernelCell(double sigma, int x, int y) {
 	double index = -((pow(x, 2) + pow(y, 2)) / (2 * pow(sigma, 2)));
 	double power = pow(M_E, index);

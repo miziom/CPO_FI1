@@ -1,7 +1,3 @@
-
-//double countKernelCell(double sigma, int row, int col);
-
-
 double countKernelCell(double sigma, int row, int col);
 
 double** createKernel(int size, double sigma);
