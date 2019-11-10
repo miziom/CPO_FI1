@@ -9,9 +9,6 @@
 #include "gui.h"
 #include "log.h"
 
-using namespace std;
-using namespace cv;
-
 int main()
 {
 	while (true)

@@ -362,11 +362,13 @@ void program() {
 				int xGuard = marginCounting(kernelSize);
 				int yGuard = marginCounting(kernelSize);
 				infoPrint(3, 0, 0, 0, 0, 0);
-				checkROI(printCounter, kernelSize, imgCopy.size().width, imgCopy.size().height, willContinue, tablePos, counter, isX, xGuard, yGuard, xMax, yMax);		
+				checkROI(printCounter, kernelSize, imgCopy.size().width, imgCopy.size().height,
+					willContinue, tablePos, counter, isX, xGuard, yGuard, xMax, yMax);		
 				infoPrint(8, 0, 0, 0, 0, 0);
 				std::string grayOrRgbDecision;
 				std::getline(std::cin, grayOrRgbDecision);
-				displayLaplacian(grayOrRgbDecision, img, imgCopy, sigma, kernelSize, tablePos[0], tablePos[1], tablePos[2], tablePos[3]);
+				displayLaplacian(grayOrRgbDecision, img, imgCopy, sigma, kernelSize,
+					tablePos[0], tablePos[1], tablePos[2], tablePos[3]);
 			}
 		}
 	}
