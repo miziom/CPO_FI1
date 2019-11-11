@@ -155,7 +155,6 @@ void LaplacianOfGaussian(cv::Mat& img, cv::Mat imgCopy, double sigma, int kernel
 	//creating Kernel
 	kernel = createKernel(kernelSize, sigma);
 	kernelSum = sumOfKernel(kernel, kernelSize);
-
 	for (int row = yTopLeft; row <= yBottomRight; row++) {
 		for (int col = xTopLeft; col <= xBottomRight; col++) {
 			//return part of image, which is needed to LoG
